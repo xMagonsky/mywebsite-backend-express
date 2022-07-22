@@ -1,14 +1,12 @@
 {
   "name": "backend-express",
   "version": "0.1.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "author": "Patryk Magoń",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "connect-redis": "^6.1.3",
