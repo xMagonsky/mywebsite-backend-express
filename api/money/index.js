@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
     res.json({msg: "hello from money api"})
 })
 
-router.post("/", (req, res) => {
+router.post("/", session.auth, (req, res) => {
     if (isNaN(req.body.amount) || !Number.isInteger(req.body.creditorID) || !Number.isInteger(req.body.borrowerID)) {
         res.status(400).json({err: "BAD_BODY"})
         return
@@ -48,7 +48,7 @@ router.get("/:id", session.auth, (req, res) => {
     })
 })
 
-router.patch("/:id", (req, res) => {
+router.patch("/:id", session.auth, (req, res) => {
     if (isNaN(req.body.amount)) {
         res.status(400).json({err: "BAD_BODY"})
         return
