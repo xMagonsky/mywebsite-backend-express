@@ -34,7 +34,7 @@ authRouter.use((req, res, next) => {
                 next()
 
             } else {
-                console.log("session destroyed")
+                console.log("session destroyed", `userid: ${req.session.userID} deviceid: ${req.session.deviceID}`)
                 req.session.destroy()
                 res.status(401).json({err: "BAD_RM_TOKEN"})
             }
@@ -48,7 +48,7 @@ authRouter.use((req, res, next) => {
             return
         }
         const [deviceID, secretToken] = rememberMe.split(".")
-        mysql.execute("SELECT id, owner, rm_token FROM devices WHERE id = ?", [deviceID], (err, result) => {
+        mysql.execute("SELECT devices.id, devices.owner, devices.rm_token, users.admin FROM devices, users WHERE devices.owner = users.id AND devices.id = ?", [deviceID], (err, result) => {
             if (err) {
                 console.log(err)
                 res.status(500).json({err: "DB_MYSQL"})
@@ -69,10 +69,24 @@ authRouter.use((req, res, next) => {
             // everything ok
             req.session.userID = result[0].owner
             req.session.deviceID = deviceID
+
+            req.session.admin = (result[0].admin === 1) ? true : false 
+
             next()
         })
     }
 })
 
+function isAdmin (req, res, next) {
+    if (req.session.admin === true) {
+        next()
+    }
+    else {
+        res.status(401).json({err: "NO_ADMIN"})
+        return
+    }
+}
+
 module.exports = sessionRouter
 module.exports.auth = authRouter
+module.exports.admin = isAdmin

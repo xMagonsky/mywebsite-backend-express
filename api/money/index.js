@@ -7,7 +7,21 @@ router.get("/", (req, res) => {
     res.json({msg: "hello from money api"})
 })
 
-router.post("/", session.auth, (req, res) => {
+router.get("/myloans", session.auth, (req, res) => {
+    mysql.execute("SELECT id, name, amount, created FROM money WHERE id_borrower = ? ORDER BY created;", [req.session.userID],
+    (err, result) => {
+        if (err) {
+            console.error(err)
+            res.status(500).json({err: "DB_MYSQL"})
+            return
+        }
+        res.json(result)
+    })
+})
+
+//ADMIN
+
+router.post("/", session.auth, session.admin, (req, res) => {
     if (isNaN(req.body.amount) || !Number.isInteger(req.body.creditorID) || !Number.isInteger(req.body.borrowerID)) {
         res.status(400).json({err: "BAD_BODY"})
         return
@@ -24,19 +38,7 @@ router.post("/", session.auth, (req, res) => {
     })
 })
 
-router.get("/loans", session.auth, (req, res) => {
-    mysql.execute("SELECT id, name, amount, created FROM money WHERE id_borrower = ? ORDER BY created;", [req.session.userID],
-    (err, result) => {
-        if (err) {
-            console.error(err)
-            res.status(500).json({err: "DB_MYSQL"})
-            return
-        }
-        res.json(result)
-    })
-})
-
-router.get("/:id", session.auth, (req, res) => {
+router.get("/:id", session.auth, session.admin, (req, res) => {
     mysql.execute("SELECT * FROM money WHERE id = ?;", [req.params.id],
     (err, result) => {
         if (err) {
@@ -48,7 +50,7 @@ router.get("/:id", session.auth, (req, res) => {
     })
 })
 
-router.patch("/:id", session.auth, (req, res) => {
+router.patch("/:id", session.auth, session.admin, (req, res) => {
     if (isNaN(req.body.amount)) {
         res.status(400).json({err: "BAD_BODY"})
         return

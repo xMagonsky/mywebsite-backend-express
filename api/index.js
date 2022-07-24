@@ -14,7 +14,9 @@ router.get("/", (req, res) => {
 })
 
 router.get("/amilogged", session.auth, (req, res) => {
-    res.json({status: "ok"})
+    res.json({
+        admin: req.session.admin
+    })
 })
 
 router.post("/login", session, (req, res) => {
@@ -28,7 +30,7 @@ router.post("/login", session, (req, res) => {
         return
     }
     
-    mysql.execute("SELECT id, name, password FROM users WHERE name = ?", [req.body.login], (err, result) => {
+    mysql.execute("SELECT id, name, password, admin FROM users WHERE name = ?", [req.body.login], (err, result) => {
         if (err) {
             console.log(err)
             res.status(500).json({err: "DB_MYSQL"})
@@ -66,6 +68,8 @@ router.post("/login", session, (req, res) => {
                     if (req.body.rememberMe) res.cookie("AUTH_RM", deviceID + "." + secretToken)
                     req.session.userID = result[0].id
                     req.session.deviceID = deviceID
+                    
+                    req.session.admin = (result[0].admin === 1) ? true : false 
                     
                     res.json({status: "ok"})
                 })
