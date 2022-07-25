@@ -1,7 +1,7 @@
 const mysql = require("mysql2")
 const {createClient} = require("redis")
 
-module.exports.mysql = mysql.createConnection({
+module.exports.mysql = mysql.createPool({
     host: "localhost",
     user: "root",
     password: "admin",
