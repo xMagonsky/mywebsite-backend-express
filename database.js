@@ -1,20 +1,21 @@
 const mysql = require("mysql2")
 const {createClient} = require("redis")
 
+
 module.exports.mysql = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "admin",
-    database: "family"
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DB
 })
 
 const redisClient = createClient({
     legacyMode: "true",
     socket: {
-        host: "fogline.ivi.pl"
+        host: process.env.REDIS_HOST
     },
-    username: "default",
-    password: "redis@12"
+    username: process.env.REDIS_USER,
+    password: process.env.REDIS_PASS
 })
 redisClient.on('error', (err) => console.log('Redis Client Error', err))
 redisClient.connect()

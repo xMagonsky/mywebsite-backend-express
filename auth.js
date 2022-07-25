@@ -12,7 +12,7 @@ const {mysql, redisClient} = require("./database")
 sessionRouter.use(session({
     store: new RedisStore({ client: redisClient }),
     name: "AUTH_SID",
-    secret: "supersecret1337",
+    secret: process.env.SESSION_SECRET_KEY,
     resave: "false",
     saveUninitialized: "false"
 }))
