@@ -34,7 +34,7 @@ authRouter.use((req, res, next) => {
                 next()
 
             } else {
-                console.log("session destroyed", `userid: ${req.session.userID} deviceid: ${req.session.deviceID}`)
+                console.log("session destroyed - device not found", `userid: ${req.session.userID} deviceid: ${req.session.deviceID}`)
                 req.session.destroy()
                 res.status(401).json({err: "BAD_RM_TOKEN"})
             }
