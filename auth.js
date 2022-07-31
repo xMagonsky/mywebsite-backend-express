@@ -21,7 +21,10 @@ sessionRouter.use(session({
 authRouter.use(sessionRouter)
 
 // AUTHENTICATION
+const NS_PER_SEC = 1e9;
+const MS_PER_NS = 1e-6;
 authRouter.use((req, res, next) => {
+    const startTime = process.hrtime()
     if (req.session.userID && req.session.deviceID) {
         redisClient.get("device:" + req.session.deviceID, (err, found) => {
             if (err) {
@@ -31,6 +34,8 @@ authRouter.use((req, res, next) => {
             }
 
             if (found) {
+                const endTime = process.hrtime(startTime)
+                console.log(`Auth took: ${ (endTime[0] * NS_PER_SEC + endTime[1])  * MS_PER_NS } ms`);
                 next()
 
             } else {
@@ -71,7 +76,7 @@ authRouter.use((req, res, next) => {
             req.session.deviceID = deviceID
 
             req.session.admin = (result[0].admin === 1) ? true : false 
-
+            
             next()
         })
     }
