@@ -37,7 +37,7 @@ router.post("/login", session, (req, res) => {
             return
         }
 
-        //TEST CREDENTIALS
+        //CHECK CREDENTIALS
         bcrypt.compare(req.body.password, result[0]?.password, (err, compare) => {
             if (compare !== true || result.length !== 1) {
                 res.status(401).json({err: "BAD_CREDENTIALS"})
@@ -65,7 +65,7 @@ router.post("/login", session, (req, res) => {
                         return
                     }
 
-                    if (req.body.rememberMe) res.cookie("AUTH_RM", deviceID + "." + secretToken)
+                    if (req.body.rememberMe) res.cookie("AUTH_RM", deviceID + "." + secretToken, {httpOnly: true, maxAge: 31556952000})
                     req.session.userID = result[0].id
                     req.session.deviceID = deviceID
                     
@@ -78,10 +78,10 @@ router.post("/login", session, (req, res) => {
     })
 })
 
-router.post("/hashpw", (req, res) => {
-    bcrypt.hash(req.body.password, 10, (err, hash) => {
-        res.json({msg: hash})
-    })
-})
+// router.post("/hashpw", (req, res) => {
+//     bcrypt.hash(req.body.password, 10, (err, hash) => {
+//         res.json({msg: hash})
+//     })
+// })
 
 module.exports = router

@@ -4,14 +4,20 @@ const app = express()
 const PORT = 4000
 const morgan = require("morgan")
 
-app.use(morgan("[:date[web]] :remote-addr :remote-user -> HTTP/:http-version :method :url -> [:status] :response-time ms"))
+if (process.env.NODE_ENV === "production") {
+    app.use(morgan("[:date[web]] :req[X-Real-IP] -> :method :url -> [:status] :response-time ms"))
+} else {
+    app.use(morgan("[:date[web]] :remote-addr -> :method :url -> [:status] :response-time ms"))
+}
 
 app.use(express.json())
 
 app.use("/api", require("./api"))
 
 app.get("/", (req, res) => {
-    res.send("elo")
+    res.send("Hello!")
 })
 
-app.listen(PORT)
+app.listen(PORT, () => {
+    console.log("Server started.")
+})
