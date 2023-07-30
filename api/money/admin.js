@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router()
 const {mysql} = require("../../database")
-const session = require("../../auth")
+const auth = require("../../auth")
 
 
-router.use(session.admin)
+router.use(auth.requireAdmin)
 
 //get all loans
 router.get("/", (req, res) => {

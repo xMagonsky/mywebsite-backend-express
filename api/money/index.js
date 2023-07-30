@@ -1,12 +1,12 @@
 const express = require("express")
 const router = express.Router()
 const {mysql} = require("../../database")
-const session = require("../../auth")
+const auth = require("../../auth")
 
 const moneyAdmin = require("./admin")
 
 
-router.use(session.auth)
+router.use(auth)
 
 router.get("/myloans", (req, res) => {
     mysql.execute("SELECT id, name, amount, created FROM money WHERE id_borrower = ? ORDER BY created;", [req.session.userID],
