@@ -19,9 +19,4 @@ List of available endpoints:
 - `GET /api/loans/:id` - Retrieves a loan by ID
 - `PATCH /api/loans/:id` - Updates a loan by ID
 - `DELETE /api/loans/:id` - Deletes a loan by ID
-
-## Technologies
-- Node.js
-- Express.js
-- MySQL
-- Redis
+- 
